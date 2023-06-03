@@ -1,8 +1,13 @@
 # gRPC-Concepts
 
-gRPC-Concepts
+This repo doesn't do anything particularly interesting. It's just a playground for me to learn
+[gRPC](https://grpc.io/).
 
 ## Pitchfork Layout
+
+<details>
+
+<summary>Click to expand...</summary>
 
 This project follows [The Pitchfork Layout](https://api.csswg.org/bikeshed/?force=1&url=https://raw.githubusercontent.com/vector-of-bool/pitchfork/develop/data/spec.bs).
 
@@ -31,3 +36,5 @@ This project follows [The Pitchfork Layout](https://api.csswg.org/bikeshed/?forc
 >[`docs/`](docs/README.md): Directory for project documentation.
 >
 >[`libs/`](libs/README.md): Directory for main project submodules.
+
+</details>
