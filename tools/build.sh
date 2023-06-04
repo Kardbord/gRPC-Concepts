@@ -55,5 +55,5 @@ if [[ "${CLEAN}" = "true" ]]; then
   find . -mindepth 1 -delete
   git checkout .
 fi
-cmake -GNinja -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" "${EXTRA_CMAKE_OPTS}" .. && ninja -j
+cmake -GNinja -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" "${EXTRA_CMAKE_OPTS}" .. && ninja
 popd >/dev/null
