@@ -1,6 +1,6 @@
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 cmake_minimum_required(VERSION 3.16.3)
-project(gRPC-Concepts)
+project(gRPC-Concepts C CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -9,39 +9,26 @@ endif()
 
 include(grpc.cmake)
 
-if(MSVC)
-  add_compile_options(/W4 /WX)
-else()
-  add_compile_options(
-    -Wall -Wextra -Wpedantic -Werror
-    $<$<CONFIG:RELEASE>:-Ofast>
-    $<$<CONFIG:DEBUG>:-O0>
-    $<$<CONFIG:DEBUG>:-ggdb3>
-  )
-endif()
-
 set(SRC_DIR src)
 set(PROTO_DIR ${SRC_DIR}/grpc_concepts/proto)
+file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false CONFIGURE_DEPENDS ${SRC_DIR}/*.cpp)
+file(GLOB_RECURSE HDR_FILES LIST_DIRECTORIES false CONFIGURE_DEPENDS ${SRC_DIR}/*.h)
+set_property(SOURCE ${SRC_FILES} PROPERTY COMPILE_FLAGS -Wall -Wextra -Wpedantic -Werror $<$<CONFIG:RELEASE>:-Ofast> $<$<CONFIG:DEBUG>:-O0> $<$<CONFIG:DEBUG>:-ggdb3>)
+set_property(SOURCE ${HDR_FILES} PROPERTY COMPILE_FLAGS -Wall -Wextra -Wpedantic -Werror $<$<CONFIG:RELEASE>:-Ofast> $<$<CONFIG:DEBUG>:-O0> $<$<CONFIG:DEBUG>:-ggdb3>)
 
 message(STATUS "Globbing ${PROJECT_NAME} proto files...")
 file(GLOB_RECURSE PROTO_SRCS LIST_DIRECTORIES false CONFIGURE_DEPENDS ${PROTO_DIR}/*.proto)
 set(PROTOBUF_GENERATE_CPP_APPEND_PATH ON)
 protobuf_generate_grpc_cpp(GENERATED_PROTO_SRCS GENERATED_PROTO_HDRS ${PROTO_SRCS})
+set_property(SOURCE ${GENERATED_PROTO_SRCS} PROPERTY COMPILE_FLAGS -Wno-error -Wno-pedantic)
+set_property(SOURCE ${GENERATED_PROTO_HDRS} PROPERTY COMPILE_FLAGS -Wno-error -Wno-pedantic)
 
 add_executable(
-  test
-  src/grpc_concepts/sync/test.cpp
+  ${PROJECT_NAME}
+  ${SRC_FILES}
+  ${HDR_FILES}
   ${GENERATED_PROTO_SRCS}
   ${GENERATED_PROTO_HDRS}
 )
-target_link_libraries(test grpc grpc++)
-#find_package(Boost REQUIRED)
-#include_directories(${Boost_INCLUDE_DIRS})
-
-#include_directories(src)
-#set("${CMAKE_PROJECT_NAME}_SRC"
-#  main.cpp
-#  src/Foo.cpp
-#)
-#add_executable(${CMAKE_PROJECT_NAME} ${${CMAKE_PROJECT_NAME}_SRC})
-#target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Boost::headers)
+target_include_directories(${PROJECT_NAME} PUBLIC src)
+target_link_libraries(${PROJECT_NAME} grpc grpc++)

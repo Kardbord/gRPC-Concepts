@@ -65,6 +65,7 @@ function(protobuf_generate_grpc_cpp SRCS HDRS)
              "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.grpc.pb.h"
       COMMAND  $<TARGET_FILE:protoc>
       ARGS --grpc_out=${CMAKE_CURRENT_BINARY_DIR}
+           --cpp_out=${CMAKE_CURRENT_BINARY_DIR}
            --plugin=protoc-gen-grpc=$<TARGET_FILE:grpc_cpp_plugin>
            ${_protobuf_include_path} ${ABS_FIL}
       DEPENDS ${ABS_FIL} ${_gRPC_PROTOBUF_PROTOC_EXECUTABLE}
