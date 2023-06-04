@@ -20,7 +20,21 @@ else()
   )
 endif()
 
+set(SRC_DIR src)
+set(PROTO_DIR ${SRC_DIR}/grpc_concepts/proto)
 
+message(STATUS "Globbing ${PROJECT_NAME} proto files...")
+file(GLOB_RECURSE PROTO_SRCS LIST_DIRECTORIES false CONFIGURE_DEPENDS ${PROTO_DIR}/*.proto)
+set(PROTOBUF_GENERATE_CPP_APPEND_PATH ON)
+protobuf_generate_grpc_cpp(GENERATED_PROTO_SRCS GENERATED_PROTO_HDRS ${PROTO_SRCS})
+
+add_executable(
+  test
+  src/grpc_concepts/sync/test.cpp
+  ${GENERATED_PROTO_SRCS}
+  ${GENERATED_PROTO_HDRS}
+)
+target_link_libraries(test grpc grpc++)
 #find_package(Boost REQUIRED)
 #include_directories(${Boost_INCLUDE_DIRS})
 
